@@ -2,6 +2,7 @@ import pygame as pg
 import constants as c
 from enemy import Enemy
 import os
+from world import World
 
 # get working directory 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +18,11 @@ screen = pg.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
 pg.display.set_caption("Tower Defense")
 
 #load images
+map_image = pg.image.load("levels/map.png").convert_alpha()
 enemy_image = pg.image.load('Assets/Images/Enemy/enemy_1.png').convert_alpha()
+
+#create world
+world = World(map_image)
 
 #create groups
 enemy_group = pg.sprite.Group()

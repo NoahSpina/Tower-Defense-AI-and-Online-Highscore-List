@@ -1,6 +1,10 @@
 import pygame as pg
 import constants as c
 from enemy import Enemy
+import os
+
+# get working directory 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 #initialize pygame
 pg.init()

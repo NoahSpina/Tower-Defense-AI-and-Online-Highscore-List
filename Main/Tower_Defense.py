@@ -43,6 +43,7 @@ while run:
     clock.tick(c.FPS)
 
     screen.fill("grey100")
+    world.draw(screen)
 
     #draw enemy path
     pg.draw.lines(screen, "grey0", False, waypoints)

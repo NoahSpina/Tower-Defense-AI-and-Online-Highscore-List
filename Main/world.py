@@ -1,7 +1,7 @@
 import pygame as pg
 
 class World():
-    def __init(self, map_image):
+    def __init__(self, map_image):
         self.image = map_image
 
     def draw(self, surface):

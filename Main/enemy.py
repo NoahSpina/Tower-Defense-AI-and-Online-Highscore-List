@@ -9,7 +9,7 @@ class Enemy(pg.sprite.Sprite):
         self.waypoints = waypoints
         self.pos = Vector2(self.waypoints[0])
         self.target_waypoint = 1
-        self.speed = 2
+        self.speed = 1
         self.angle = 0
         self.original_image = pg.transform.flip(image, True, False)
         self.image = pg.transform.rotate(self.original_image, self.angle)

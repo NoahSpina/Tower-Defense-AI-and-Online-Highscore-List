@@ -21,6 +21,7 @@ screen = pg.display.set_mode((c.SCREEN_WIDTH + c.SIDE_PANEL, c.SCREEN_HEIGHT))
 pg.display.set_caption("Tower Defense")
 
 # game variables
+last_enemy_spawn = pg.time.get_ticks()
 selected_turret = None
 placing_turrets = False
 
@@ -35,7 +36,12 @@ for x in range(1, c.TURRET_LEVELS + 1):
 # individual turret image for mouse cursor
 cursor_turret = pg.image.load('Assets/Images/Turret/cursor_turret.png').convert_alpha()
 # enemies
-enemy_image = pg.image.load('Assets/Images/Enemy/enemy_1.png').convert_alpha()
+enemy_images = {
+    "weak": pg.image.load('Assets/Images/Enemy/enemy_1.png').convert_alpha(),
+    "medium": pg.image.load('Assets/Images/Enemy/enemy_2.png').convert_alpha(),
+    "strong": pg.image.load('Assets/Images/Enemy/enemy_3.png').convert_alpha(),
+    "elite": pg.image.load('Assets/Images/Enemy/enemy_4.png').convert_alpha()
+}
 # buttons
 buy_turret_image = pg.image.load('assets/images/button/buy_turret.png').convert_alpha()
 cancel_image = pg.image.load('assets/images/button/cancel.png').convert_alpha()
@@ -78,13 +84,11 @@ def clear_selection():
 # create world
 world = World(world_data, map_image)
 world.process_data()
+world.process_enemies()
 
 # create groups
 enemy_group = pg.sprite.Group()
 turret_group = pg.sprite.Group()
-
-enemy = Enemy(world.waypoints, enemy_image)
-enemy_group.add(enemy)
 
 # create buttons
 turret_button = Button(c.SCREEN_WIDTH + 30, 120, buy_turret_image, True)
@@ -95,9 +99,9 @@ upgrade_button = Button(c.SCREEN_WIDTH + 5, 180, upgrade_turret_image, True)
 run = True
 while run:
     clock.tick(c.FPS)
-    ####
+    #####################
     # UPDATING
-    ####
+    #####################
 
     # update groups
     enemy_group.update()
@@ -107,9 +111,9 @@ while run:
     if selected_turret:
         selected_turret.selected = True
     
-    ####
+    #####################
     # DRAWING
-    ####
+    #####################
     screen.fill("grey100")
     world.draw(screen)
 
@@ -118,8 +122,16 @@ while run:
     for turret in turret_group:
         turret.draw(screen)
 
-    # draw buttons
+    # spawn enemies
+    if pg.time.get_ticks() - last_enemy_spawn > c.SPAWN_COOLDOWN:
+        if world.spawned_enemies < len(world.enemy_list):
+            enemy_type = world.enemy_list[world.spawned_enemies]
+            enemy = Enemy(enemy_type, world.waypoints, enemy_images)
+            enemy_group.add(enemy)
+            world.spawned_enemies += 1
+            last_enemy_spawn = pg.time.get_ticks()
 
+    # draw buttons
     if turret_button.draw(screen):
         placing_turrets = True
 

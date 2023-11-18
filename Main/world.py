@@ -1,10 +1,13 @@
 import pygame as pg
 import random
 from enemy_data import ENEMY_SPAWN_DATA
+import constants as c
 
 
 class World:
     def __init__(self, data, map_image):
+        self.health = c.HEALTH
+        self.money = c.MONEY
         self.level = 1
         self.tile_map = []
         self.waypoints = []

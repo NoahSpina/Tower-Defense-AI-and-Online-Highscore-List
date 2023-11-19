@@ -9,6 +9,7 @@ class World:
         self.health = c.HEALTH
         self.money = c.MONEY
         self.level = 1
+        self.game_speed = 1
         self.tile_map = []
         self.waypoints = []
         self.level_data = data

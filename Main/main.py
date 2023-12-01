@@ -1,4 +1,6 @@
 import pygame as pg
+import pygame_gui
+import sys
 import constants as c
 from enemy import Enemy
 from button import Button
@@ -6,6 +8,10 @@ import os
 from turret import Turret
 from world import World
 import json
+import firebase_admin
+from firebase_admin import db
+from config import firebaseConfig
+import pyrebase
 
 # get working directory 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -15,10 +21,16 @@ pg.init()
 
 # create clock
 clock = pg.time.Clock()
+MANAGER = pygame_gui.UIManager((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
+end_game_info = {}
 
 # create game window
 screen = pg.display.set_mode((c.SCREEN_WIDTH + c.SIDE_PANEL, c.SCREEN_HEIGHT))
 pg.display.set_caption("Tower Defense")
+
+#link to firebase
+firebase = pyrebase.initialize_app(firebaseConfig)
+db = firebase.database()
 
 # game variables
 game_over = False
@@ -143,6 +155,7 @@ fast_forward_button = Button(c.SCREEN_WIDTH + 50, 300, fast_forward_image, False
 run = True
 while run:
     clock.tick(c.FPS)
+    UI_REFRESH_RATE = clock.tick(60)/1000
     #####################
     # UPDATING
     #####################
@@ -152,11 +165,15 @@ while run:
         if world.health <= 0:
             game_over = True
             # loss
+            NAME_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((325,255), (150, 40)), manager=MANAGER, 
+                                                                                   object_id = "#name_entry")
             game_outcome = -1
         # check if player has won
         if world.level > c.TOTAL_LEVELS:
             game_over = True
             # win
+            NAME_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((325,255), (150, 40)), manager=MANAGER, 
+                                                                                   object_id = "#name_entry")
             game_outcome = 1
 
         # update groups
@@ -243,13 +260,17 @@ while run:
         pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
         if game_outcome == -1:
             draw_text("GAME OVER", large_font, "grey0", 310, 230)
-            # GET NAME SUBMISSION HERE AND RECORD LEVEL NUMBER
         elif game_outcome == 1:
             draw_text("YOU WIN!", large_font, "grey0", 315, 230)
-            # GET NAME SUBMISSION HERE
         # restart button
         if restart_button.draw(screen):
-            # HERE UPLOAD NAME AND LVL TO FIREBASE 
+            #create object with user name, level reached, and remaining lives
+            end_game_info['level'] = world.level
+            end_game_info['remaining_health'] = world.health
+            upload_object = end_game_info
+            #push to firebase
+            db.push(upload_object)
+            print(upload_object)
             game_over = False
             level_started = False
             placing_turrets = False
@@ -261,6 +282,8 @@ while run:
             # empty groups
             enemy_group.empty()
             turret_group.empty()
+            #reset end game info
+            end_game_info = {}
 
     # event handler
     for event in pg.event.get():
@@ -268,6 +291,7 @@ while run:
         if event.type == pg.QUIT:
             run = False
         # mouse click
+        MANAGER.process_events(event)
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pg.mouse.get_pos()
             # check if mouse is on game area
@@ -281,6 +305,11 @@ while run:
                         create_turret(mouse_pos)
                 else:
                     selected_turret = select_turret(mouse_pos)
+        if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#name_entry":
+            end_game_info['user'] = event.text
+            NAME_INPUT.kill()
+    MANAGER.update(UI_REFRESH_RATE)
+    MANAGER.draw_ui(screen)
 
     # update display
     pg.display.flip()

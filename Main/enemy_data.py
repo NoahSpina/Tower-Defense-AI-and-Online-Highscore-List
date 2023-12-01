@@ -110,7 +110,7 @@ ENEMY_DATA = {
     "weak":
         {
             "health": 10,
-            "speed": 2
+            "speed": 10
         },
     "medium":
         {

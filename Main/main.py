@@ -81,6 +81,7 @@ with open('levels/map.tmj') as file:
 # load fonts for displaying text on the screen
 text_font = pg.font.SysFont("Consolas", 24, bold=True)
 large_font = pg.font.SysFont("Consolas", 36)
+small_font = pg.font.SysFont("Consolas", 20)
 
 
 # function for outputting text onto the screen
@@ -148,7 +149,7 @@ turret_button = Button(c.SCREEN_WIDTH + 30, 120, buy_turret_image, True)
 cancel_button = Button(c.SCREEN_WIDTH + 50, 180, cancel_image, True)
 upgrade_button = Button(c.SCREEN_WIDTH + 5, 180, upgrade_turret_image, True)
 begin_button = Button(c.SCREEN_WIDTH + 60, 300, begin_image, True)
-restart_button = Button(310, 300, restart_image, True)
+restart_button = Button(310, 400, restart_image, True)
 fast_forward_button = Button(c.SCREEN_WIDTH + 50, 300, fast_forward_image, False)
 
 # game loop
@@ -165,14 +166,14 @@ while run:
         if world.health <= 0:
             game_over = True
             # loss
-            NAME_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((325,255), (150, 40)), manager=MANAGER, 
+            NAME_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((325,330), (150, 40)), manager=MANAGER, 
                                                                                    object_id = "#name_entry")
             game_outcome = -1
         # check if player has won
         if world.level > c.TOTAL_LEVELS:
             game_over = True
             # win
-            NAME_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((325,255), (150, 40)), manager=MANAGER, 
+            NAME_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((325,330), (150, 40)), manager=MANAGER, 
                                                                                    object_id = "#name_entry")
             game_outcome = 1
 
@@ -257,7 +258,9 @@ while run:
                         selected_turret.upgrade()
                         world.money -= c.UPGRADE_COST
     else:
-        pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
+        pg.draw.rect(screen, "dodgerblue", (150, 200, 500, 350), border_radius=30)
+        draw_text("Type name, press enter, and", small_font, "grey0", 245, 270)
+        draw_text("hit restart to upload results!", small_font, "grey0", 235, 300)
         if game_outcome == -1:
             draw_text("GAME OVER", large_font, "grey0", 310, 230)
         elif game_outcome == 1:

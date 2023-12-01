@@ -243,10 +243,13 @@ while run:
         pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius=30)
         if game_outcome == -1:
             draw_text("GAME OVER", large_font, "grey0", 310, 230)
+            # GET NAME SUBMISSION HERE AND RECORD LEVEL NUMBER
         elif game_outcome == 1:
             draw_text("YOU WIN!", large_font, "grey0", 315, 230)
+            # GET NAME SUBMISSION HERE
         # restart button
         if restart_button.draw(screen):
+            # HERE UPLOAD NAME AND LVL TO FIREBASE 
             game_over = False
             level_started = False
             placing_turrets = False

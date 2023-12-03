@@ -12,6 +12,7 @@ import firebase_admin
 from firebase_admin import db
 from config import firebaseConfig
 import pyrebase
+from datetime import datetime
 
 # get working directory 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -267,13 +268,21 @@ while run:
             draw_text("YOU WIN!", large_font, "grey0", 315, 230)
         # restart button
         if restart_button.draw(screen):
-            #create object with user name, level reached, and remaining lives
-            end_game_info['level'] = world.level
-            end_game_info['remaining_health'] = world.health
-            upload_object = end_game_info
-            #push to firebase
-            db.push(upload_object)
-            print(upload_object)
+            if 'user' in end_game_info:
+                #create object with user name, level reached, and remaining lives
+                end_game_info['level'] = world.level
+                end_game_info['remaining_health'] = world.health
+                end_game_info['money'] = world.money
+                now = datetime.now()
+                formatted_datetime = now.strftime("%Y-%m-%d %H:%M")
+                end_game_info['time'] = formatted_datetime
+                upload_object = end_game_info
+                #push to firebase
+                db.child("/FinalScores").push(upload_object)
+                print(upload_object)
+            if NAME_INPUT:
+                NAME_INPUT.kill()
+            
             game_over = False
             level_started = False
             placing_turrets = False

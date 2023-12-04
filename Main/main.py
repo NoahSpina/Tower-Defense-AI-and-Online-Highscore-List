@@ -19,12 +19,10 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # initialize pygame
 pg.init()
 
-# create clock
+# create clock and window
 clock = pg.time.Clock()
 MANAGER = pygame_gui.UIManager((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
 end_game_info = {}
-
-# create game window
 screen = pg.display.set_mode((c.SCREEN_WIDTH + c.SIDE_PANEL, c.SCREEN_HEIGHT))
 pg.display.set_caption("Tower Defense")
 
@@ -44,7 +42,7 @@ level_started = False
 # load images
 # map
 map_image = pg.image.load("levels/map.png").convert_alpha()
-# turret sprite sheets
+# load turret sprite sheets
 turret_spritesheets = []
 for x in range(1, c.TURRET_LEVELS + 1):
     turret_sheet = pg.image.load(f'Assets/Images/Turret/turret_{x}.png')

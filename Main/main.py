@@ -8,7 +8,6 @@ import os
 from turret import Turret
 from world import World
 import json
-import firebase_admin
 from firebase_admin import db
 from config import firebaseConfig
 import pyrebase
@@ -163,14 +162,12 @@ while run:
     #####################
 
     if not game_over:
-        # check if player has lost
         if world.health <= 0:
             game_over = True
             # loss
             NAME_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((325,330), (150, 40)), manager=MANAGER, 
                                                                                    object_id = "#name_entry")
             game_outcome = -1
-        # check if player has won
         if world.level > c.TOTAL_LEVELS:
             game_over = True
             # win
@@ -269,7 +266,7 @@ while run:
         # restart button
         if restart_button.draw(screen):
             if 'user' in end_game_info:
-                #create object with user name, level reached, and remaining lives
+                #create upload object
                 end_game_info['level'] = world.level
                 end_game_info['remaining_health'] = world.health
                 end_game_info['money'] = world.money
@@ -280,6 +277,7 @@ while run:
                 #push to firebase
                 db.child("/FinalScores").push(upload_object)
                 print(upload_object)
+            #kill name input if it still exists (name hasnt been inputed)
             if NAME_INPUT:
                 NAME_INPUT.kill()
             

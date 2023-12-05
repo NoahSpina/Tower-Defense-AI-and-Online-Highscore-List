@@ -14,18 +14,14 @@ class Turret(pg.sprite.Sprite):
         self.selected = False
         self.target = None
 
-        # position variables
         self.tile_x = tile_x
         self.tile_y = tile_y
 
-        # calculate center coordinates
         self.x = (self.tile_x + .5) * c.TILE_SIZE
         self.y = (self.tile_y + .5) * c.TILE_SIZE
 
-        # shot sound effect
         self.shot_fx = shot_fx
 
-        # animation variables
         self.sprite_sheets = sprite_sheets
         self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
         self.frame_index = 0
@@ -38,7 +34,6 @@ class Turret(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
 
-        # create transparent circle showing range
         self.range_image = pg.Surface((self.range * 2, self.range * 2))
         self.range_image.fill((0, 0, 0))
         self.range_image.set_colorkey((0, 0, 0))
@@ -79,14 +74,11 @@ class Turret(pg.sprite.Sprite):
                 if dist <= self.range:
                     self.target = enemy
                     self.angle = math.degrees(math.atan2(-y_dist, x_dist))
-                    # damage enemy
                     self.target.health -= c.DAMAGE
-                    # play sound effect
                     self.shot_fx.play()
                     break
 
     def play_animation(self):
-        # update image
         self.original_image = self.animation_list[self.frame_index]
 
         # check if enough time has passed since last update
@@ -94,10 +86,9 @@ class Turret(pg.sprite.Sprite):
             self.update_time = pg.time.get_ticks()
             self.frame_index += 1
 
-            # check if animation has finished and reset to idle
+
             if self.frame_index >= len(self.animation_list):
                 self.frame_index = 0
-                # record completed time and clear target so cooldown can begin
                 self.last_shot = pg.time.get_ticks()
                 self.target = None
 

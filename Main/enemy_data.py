@@ -285,21 +285,21 @@ ENEMY_DATA = {
     "weak":
         {
             "health": 10,
-            "speed": 3
+            "speed": 2
         },
     "medium":
         {
             "health": 15,
-            "speed": 4
+            "speed": 3
         },
     "strong":
         {
             "health": 20,
-            "speed": 6
+            "speed": 4
         },
     "elite":
         {
             "health": 30,
-            "speed": 8
+            "speed": 7
         }
 }
